@@ -15,7 +15,7 @@ if [ ! -f "$appimage_path" ]; then
 fi
 
 # Prompt for app name
-read -p "Enter a user-friendly name for the app: " app_name
+read -p "Enter the name of the app: " app_name
 sanitized_name=$(sanitize_name "$app_name")
 
 # Prompt for icon URL
@@ -24,16 +24,17 @@ read -p "Enter the URL of the PNG icon (leave blank for no icon): " icon_url
 # Prompt for category
 read -p "Enter the category for the app: " app_category
 
-# Make AppImage executable
-chmod a+x "$appimage_path"
+# Create app directory in /opt
+sudo mkdir -p "/opt/${sanitized_name}"
 
-# Move AppImage to /opt
-sudo mv "$appimage_path" "/opt/${sanitized_name}.AppImage"
+# Make AppImage executable and move it
+chmod a+x "$appimage_path"
+sudo mv "$appimage_path" "/opt/${sanitized_name}/${sanitized_name}.AppImage"
 
 # Download icon if URL is provided
 if [ -n "$icon_url" ]; then
-    sudo wget -O "/opt/${sanitized_name}.png" "$icon_url"
-    icon_path="/opt/${sanitized_name}.png"
+    sudo wget -O "/opt/${sanitized_name}/${sanitized_name}.png" "$icon_url"
+    icon_path="/opt/${sanitized_name}/${sanitized_name}.png"
 else
     icon_path=""
 fi
@@ -42,10 +43,10 @@ fi
 cat << EOF | sudo tee "/usr/share/applications/${sanitized_name}.desktop" > /dev/null
 [Desktop Entry]
 Name=$app_name
-Exec=/opt/${sanitized_name}.AppImage
+Exec=/opt/${sanitized_name}/${sanitized_name}.AppImage
 Icon=$icon_path
 Type=Application
 Categories=$app_category
 EOF
 
-echo "Installation completed successfully!"
+echo "picstaller has successfully installed ${app_name}!"
