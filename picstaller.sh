@@ -1,12 +1,26 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Function to sanitize app name
 sanitize_name() {
     echo "$1" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//'
 }
 
-# Prompt for AppImage file
-read -p "Enter the path to the AppImage file: " appimage_path
+# Function to prompt for input with default value
+prompt_with_default() {
+    local prompt="$1"
+    local default="$2"
+    local result
+
+    read -p "${prompt} [${default}]: " result
+    echo "${result:-$default}"
+}
+
+# Check if AppImage file is provided as an argument
+if [ $# -ge 1 ]; then
+    appimage_path="$1"
+else
+    read -p "Enter the path to the AppImage file: " appimage_path
+fi
 
 # Check if file exists
 if [ ! -f "$appimage_path" ]; then
@@ -14,15 +28,18 @@ if [ ! -f "$appimage_path" ]; then
     exit 1
 fi
 
-# Prompt for app name
-read -p "Enter the name of the app: " app_name
+# Extract app name from filename (without extension)
+default_app_name=$(basename "$appimage_path" .AppImage)
+
+# Prompt for app name with default
+app_name=$(prompt_with_default "Enter the name of the app" "$default_app_name")
 sanitized_name=$(sanitize_name "$app_name")
 
 # Prompt for icon URL
-read -p "Enter the URL of the PNG icon (leave blank for no icon): " icon_url
+icon_url=$(prompt_with_default "Enter the URL of the PNG icon (leave blank for no icon)" "")
 
 # Prompt for category
-read -p "Enter the category for the app: " app_category
+app_category=$(prompt_with_default "Enter the category for the app" "Utility")
 
 # Create app directory in /opt
 sudo mkdir -p "/opt/${sanitized_name}"
