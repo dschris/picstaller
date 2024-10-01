@@ -2,10 +2,10 @@ picstaller is a bash script that allows you to install AppImages with a user-fri
 
 It does this by:
 
-1. Making the AppImage executable
-2. Moving the AppImage to /opt
-3. Downloading the icon
-4. Creating a desktop entry
+* Making the AppImage executable
+* Moving the AppImage to /opt
+* Downloading the icon
+* Creating a desktop entry
 
 ## Installation
 
@@ -17,20 +17,20 @@ chmod +x /usr/local/bin/picstaller
 
 ## Note on Privileges
 
-picstaller must be run with root privileges, so that it can make the AppImage executable and move it to /opt and create entries in /usr/share/applications.
+picstaller must be run with root privileges so that it can:
+* make the AppImage executable
+* move it to /opt
+* create entries in /usr/share/applications.
 
 ## Usage
 
 picstaller can be run either with a command-line argument:
 ```bash
-sudopicstaller /path/to/AppImage
+sudo picstaller /path/to/AppImage
 ```
 or by being run in interactive mode, in which case it will prompt for the path to the AppImage:
 ```bash
 sudo picstaller
 ```
 
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for more details.
 
